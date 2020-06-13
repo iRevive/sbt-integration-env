@@ -1,19 +1,12 @@
 lazy val root = project
   .in(file("."))
   .enablePlugins(SbtPlugin)
-    .settings(
-      name := "sbt-integration-env",
-      crossSbtVersions := Seq("1.3.12"),
-
-      scriptedBufferLog := false,
-      Test / test := {
-        val _ = (Test / test).value
-        scripted.toTask("").value
-      },
-      scriptedLaunchOpts := scriptedLaunchOpts.value ++ Seq(
-        "-Xmx1024M", "-Dplugin.version=" + version.value
-      )
-    )
+  .settings(
+    name                := "sbt-integration-env",
+    crossSbtVersions    := Seq("1.3.12"),
+    scriptedBufferLog   := false,
+    scriptedLaunchOpts ++= Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
+  )
 
 inThisBuild(
   Seq(

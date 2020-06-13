@@ -1,0 +1,8 @@
+version: '2.0'
+services:
+
+  web:
+    image: 'alpine'
+    volumes:
+      - .:/test
+    command: 'touch /test/container-file.txt'

@@ -1,0 +1,4 @@
+$ delete container-file.txt
+> test
+$ sleep 2000
+$ exec sh verify.sh
