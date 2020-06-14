@@ -23,4 +23,4 @@ jobs:
           key: sbt-coursier-cache
 
       - name: Tests
-        run: sbt plugin/scripted
+        run: sbt scripted
