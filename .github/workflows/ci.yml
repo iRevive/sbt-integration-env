@@ -22,5 +22,8 @@ jobs:
           path: ~/.cache/coursier/v1
           key: sbt-coursier-cache
 
+      - name: Scalafmt
+        run: sbt scalafmtAll scalafmtSbt
+
       - name: Tests
         run: sbt scripted
