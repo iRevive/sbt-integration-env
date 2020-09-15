@@ -7,5 +7,6 @@ lazy val root = project
       baseDirectory.value / "docker-compose.yml",
       Some(s"${name.value}-it-network")
     ),
-    Test / testOptions := integrationEnvTestOpts.value
+    Test / testOptions := integrationEnvTestOpts.value,
+    Test / fork := true
   )

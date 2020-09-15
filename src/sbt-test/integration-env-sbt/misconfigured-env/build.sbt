@@ -8,7 +8,7 @@ lazy val root = project
 
         override val name: String = "failing-env"
 
-        override def create(mode: EnvMode): Either[EnvConfigurationError, IntegrationEnv] =
+        override def create(mode: TerminationStrategy): Either[EnvConfigurationError, IntegrationEnv] =
           Left(EnvConfigurationError.NotAvailable)
       }
     }
