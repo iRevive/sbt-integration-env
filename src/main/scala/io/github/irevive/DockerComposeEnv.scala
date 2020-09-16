@@ -31,13 +31,13 @@ class DockerComposeEnvProvider(
 
   override val name: String = "docker-compose"
 
-  override def create(mode: EnvMode): Either[EnvConfigurationError, IntegrationEnv] =
+  override def create(strategy: TerminationStrategy): Either[EnvConfigurationError, IntegrationEnv] =
     for {
       _ <- Either.cond("docker-compose -version".! == 0, (), EnvConfigurationError.NotAvailable)
       _ <- Either.cond(
-        dockerComposeFile.exists(),
-        (),
-        EnvConfigurationError.Misconfigured(s"$dockerComposeFile - does not exist")
+        test = dockerComposeFile.exists(),
+        right = (),
+        left = EnvConfigurationError.Misconfigured(s"$dockerComposeFile - does not exist")
       )
     } yield new DockerComposeEnv(composeProjectName, dockerComposeFile, network)
 

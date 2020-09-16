@@ -8,7 +8,7 @@ object IntegrationEnvPlugin extends AutoPlugin {
   override def trigger = noTrigger
 
   object autoImport {
-    type EnvMode                  = _root_.io.github.irevive.EnvMode
+    type TerminationStrategy      = _root_.io.github.irevive.TerminationStrategy
     type EnvConfigurationError    = _root_.io.github.irevive.EnvConfigurationError
     type IntegrationEnv           = _root_.io.github.irevive.IntegrationEnv
     type IntegrationEnvProvider   = _root_.io.github.irevive.IntegrationEnvProvider
@@ -16,68 +16,93 @@ object IntegrationEnvPlugin extends AutoPlugin {
 
     lazy val integrationEnvStart    = taskKey[Unit]("Start local integration environment")
     lazy val integrationEnvStop     = taskKey[Unit]("Stop local integration environment")
+    lazy val integrationEnvTestOpts = taskKey[Seq[TestOption]]("Setup and cleanup options")
     lazy val integrationEnv         = taskKey[IntegrationEnv]("Configured integration environment")
     lazy val integrationEnvProvider = taskKey[IntegrationEnvProvider]("Integration environment provider")
-    lazy val integrationEnvTestOpts = taskKey[Seq[TestOption]]("Setup and cleanup options")
 
-    lazy val integrationEnvMode =
-      settingKey[EnvMode]("Environment mode. CI - cleanup env after tests execution. Dev - keep env alive.")
+    lazy val integrationEnvTerminationStrategy =
+      settingKey[TerminationStrategy](
+        "Termination strategy. " +
+          "UponTestCompletion - terminate after execution of tests. " +
+          "OnSbtExit - terminate on Sbt exit. " +
+          "Never - never terminate."
+      )
   }
 
   import autoImport._
 
-  override lazy val projectSettings: Seq[Setting[_]] =
+  override def projectSettings: Seq[Setting[_]] =
     Seq(
-      integrationEnvMode := (if (insideCI.value) EnvMode.CI else EnvMode.Dev),
+      integrationEnvTerminationStrategy := {
+        if (insideCI.value) TerminationStrategy.UponTestCompletion
+        else TerminationStrategy.OnSbtExit
+      },
       integrationEnv := {
-        val provider = integrationEnvProvider.value
-        val mode     = integrationEnvMode.value
+        val projectName = name.value
+        val provider    = integrationEnvProvider.value
+        val strategy    = integrationEnvTerminationStrategy.value
 
         provider
-          .create(mode)
+          .create(strategy)
           .fold(
-            e => throw new IllegalStateException(s"Integration environment cannot be created by [${provider.name}]. Error: $e"),
+            e =>
+              throw new IllegalStateException(
+                s"Project [$projectName]. Integration environment cannot be created by [${provider.name}]. Error: $e"
+              ),
             identity
           )
       },
       integrationEnvStart := {
-        val env = integrationEnv.value
-        val log = streams.value.log
+        val projectName = name.value
+        val env         = integrationEnv.value
+        val log         = streams.value.log
 
-        log.info("Creating integration environment")
+        log.info(s"Project [$projectName]. Creating integration environment")
         env.create()
       },
       integrationEnvStop := {
-        val env = integrationEnv.value
-        val log = streams.value.log
+        val projectName = name.value
+        val env         = integrationEnv.value
+        val log         = streams.value.log
 
-        log.info("Terminating integration environment")
+        log.info(s"Project [$projectName]. Terminating integration environment")
         env.terminate()
       },
       integrationEnvTestOpts := Def.task {
-        val env  = integrationEnv.value
-        val mode = integrationEnvMode.value
-        val log  = streams.value.log
+        val projectName = name.value
+        val env         = integrationEnv.value
+        val strategy    = integrationEnvTerminationStrategy.value
+        val log         = streams.value.log
 
         val setup = Tests.Setup { () =>
-          def ci(): Unit = {
-            env.terminate()
-            env.create()
-          }
-
-          def dev(): Unit =
-            env.create()
-
-          log.info(s"Preparing integration environment. $mode mode")
-          mode.fold(ci(), dev())
+          log.info(s"Project [$projectName]. Preparing integration environment. Strategy $strategy")
+          env.prepare(strategy)
         }
 
         val cleanup = Tests.Cleanup { () =>
-          log.info(s"Cleaning up integration environment. $mode mode")
-          mode.fold(env.terminate(), ())
+          def terminate(): Unit = {
+            log.info(s"Project [$projectName]. Cleaning up integration environment")
+            env.terminate()
+          }
+
+          strategy.fold(terminate(), (), ())
         }
 
         Seq(setup, cleanup)
+      }.value,
+      Global / onUnload := Def.setting {
+        val projectName = name.value
+        val old         = (Global / onUnload).value
+        val strategy    = integrationEnvTerminationStrategy.value
+
+        val cleanup: State => State =
+          strategy.fold(
+            uponTestCompletion = identity,
+            onExit = state => s"$projectName/integrationEnvStop" :: state,
+            never = identity
+          )
+
+        old.andThen(cleanup)
       }.value
     )
 
