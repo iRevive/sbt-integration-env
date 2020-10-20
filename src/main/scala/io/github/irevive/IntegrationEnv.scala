@@ -10,7 +10,6 @@ trait IntegrationEnv {
         terminate()
         create()
       },
-      onExit = create(),
       never = create()
     )
 

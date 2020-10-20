@@ -22,10 +22,7 @@ object IntegrationEnvPlugin extends AutoPlugin {
 
     lazy val integrationEnvTerminationStrategy =
       settingKey[TerminationStrategy](
-        "Termination strategy. " +
-          "UponTestCompletion - terminate after execution of tests. " +
-          "OnSbtExit - terminate on Sbt exit. " +
-          "Never - never terminate."
+        "Termination strategy. UponTestCompletion - terminate after execution of tests. Never - never terminate."
       )
   }
 
@@ -35,7 +32,7 @@ object IntegrationEnvPlugin extends AutoPlugin {
     Seq(
       integrationEnvTerminationStrategy := {
         if (insideCI.value) TerminationStrategy.UponTestCompletion
-        else TerminationStrategy.OnSbtExit
+        else TerminationStrategy.Never
       },
       integrationEnv := {
         val projectName = name.value
@@ -85,24 +82,10 @@ object IntegrationEnvPlugin extends AutoPlugin {
             env.terminate()
           }
 
-          strategy.fold(terminate(), (), ())
+          strategy.fold(terminate(), ())
         }
 
         Seq(setup, cleanup)
-      }.value,
-      Global / onUnload := Def.setting {
-        val projectName = name.value
-        val old         = (Global / onUnload).value
-        val strategy    = integrationEnvTerminationStrategy.value
-
-        val cleanup: State => State =
-          strategy.fold(
-            uponTestCompletion = identity,
-            onExit = state => s"$projectName/integrationEnvStop" :: state,
-            never = identity
-          )
-
-        old.andThen(cleanup)
       }.value
     )
 

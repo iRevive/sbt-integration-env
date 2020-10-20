@@ -1,3 +1,0 @@
-$ delete container-file.txt
-> test
-$ sleep 2000
