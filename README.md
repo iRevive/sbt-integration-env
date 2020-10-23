@@ -11,7 +11,7 @@ You can create and terminate the environment within SBT, or configure automated 
 To use sbt-integration-env in an existing SBT project (1.3.+), add the following dependency to your `plugins.sbt`:
  
 ```sbt
-addSbtPlugin("io.github.irevive" % "sbt-integration-env" % "0.1.0")
+addSbtPlugin("io.github.irevive" % "sbt-integration-env" % "0.3.0")
 ```
 
 ## Usage Guide
