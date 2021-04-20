@@ -69,6 +69,7 @@ Test / testOptions := integrationEnvTestOpts.value
 
 The plugin uses [Setup and Cleanup](https://scala-sbt.org/1.x/docs/Testing.html#Setup+and+Cleanup) hooks for manipulations. 
 Based on the termination strategy (UponTestCompletion, OnSbtExit, Never) the plugin behaves differently.  
+
 The strategy is determined by SBT's `insideCI` command: if `insideCI` is true the `UponTestCompletion` strategy is selected, otherwise the `Never` is used.   
 It can be configured explicitly as well:  
 ```sbt
@@ -81,8 +82,8 @@ Termination strategies:
 Before tests: terminate if exist, then create new    
 After tests: terminate  
 
-2) Never
-Before tests: create new if not exist    
+2) Never  
+Before tests: create new if not exist     
 After tests: do not terminate  
 
 ## External docker network
