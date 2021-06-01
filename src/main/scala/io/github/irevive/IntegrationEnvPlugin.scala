@@ -59,7 +59,7 @@ object IntegrationEnvPlugin extends AutoPlugin {
         val cachedProvider =
           Tracked.inputChanged[IntegrationEnv.Provider, IntegrationEnv](cacheStore) { (changed, in) =>
             if (changed) {
-              if (prev.nonEmpty) log.info("Integration provider has changed. Applying a new configuration")
+              if (prev.nonEmpty) log.info(s"Integration provider has changed. Applying a new configuration [${in.name}]")
               create(in)
             } else {
               prev.getOrElse(create(in))
@@ -73,7 +73,7 @@ object IntegrationEnvPlugin extends AutoPlugin {
         val env         = integrationEnv.value
         val log         = streams.value.log
 
-        log.info(s"Project [$projectName]. Creating integration environment")
+        log.info(s"Project [$projectName]. Creating [${env.name}] integration environment")
         env.create()
       },
       integrationEnvStop := {
@@ -81,7 +81,7 @@ object IntegrationEnvPlugin extends AutoPlugin {
         val env         = integrationEnv.value
         val log         = streams.value.log
 
-        log.info(s"Project [$projectName]. Terminating integration environment")
+        log.info(s"Project [$projectName]. Terminating [${env.name}] integration environment")
         env.terminate()
       },
       integrationEnvTestOpts := Def.task {
@@ -91,13 +91,13 @@ object IntegrationEnvPlugin extends AutoPlugin {
         val log         = streams.value.log
 
         val setup = Tests.Setup { () =>
-          log.info(s"Project [$projectName]. Preparing integration environment. Strategy $strategy")
+          log.info(s"Project [$projectName]. Preparing [${env.name}] integration environment. Strategy $strategy")
           env.prepare(strategy)
         }
 
         val cleanup = Tests.Cleanup { () =>
           def terminate(): Unit = {
-            log.info(s"Project [$projectName]. Cleaning up integration environment")
+            log.info(s"Project [$projectName]. Cleaning up [${env.name}] integration environment")
             env.terminate()
           }
 

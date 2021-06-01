@@ -12,11 +12,15 @@ object DockerComposeClient {
 
   object Docker extends DockerComposeClient("docker") {
 
-    def up(dockerComposeFile: String, projectName: String, envVars: List[(String, String)]): Unit =
+    def up(dockerComposeFile: String, projectName: String, envVars: List[(String, String)]): Unit = {
+      println(s"docker compose -f $dockerComposeFile -p $projectName up -d")
       Process(s"docker compose -f $dockerComposeFile -p $projectName up -d", None, envVars: _*).!
+    }
 
-    def down(dockerComposeFile: String, projectName: String, envVars: List[(String, String)]): Unit =
+    def down(dockerComposeFile: String, projectName: String, envVars: List[(String, String)]): Unit = {
+      println(s"docker compose -f $dockerComposeFile -p $projectName down")
       Process(s"docker compose -f $dockerComposeFile -p $projectName down", None, envVars: _*).!
+    }
 
   }
 
