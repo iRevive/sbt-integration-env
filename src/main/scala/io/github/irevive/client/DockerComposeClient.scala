@@ -35,9 +35,9 @@ object DockerComposeClient {
   }
 
   def create: Either[Throwable, DockerComposeClient] =
-    Try(Process("docker compose -h").!!)
+    Try(Process("docker compose -h").!)
       .map(_ => Docker)
-      .orElse(Try(Process("docker-compose -h").!!).map(_ => DockerCompose))
+      .orElse(Try(Process("docker-compose -h").!).map(_ => DockerCompose))
       .toEither
 
 }
