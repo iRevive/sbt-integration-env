@@ -17,7 +17,7 @@ jobs:
       - uses: olafurpg/setup-scala@v10
 
       - name: Cache SBT coursier cache
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.cache/coursier/v1
           key: sbt-coursier-cache
