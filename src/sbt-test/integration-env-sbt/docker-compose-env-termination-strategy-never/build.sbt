@@ -4,7 +4,7 @@ lazy val root = project
   .settings(
     integrationEnvTerminationStrategy := _root_.io.github.irevive.TerminationStrategy.Never,
     Test / testOptions                := integrationEnvTestOpts.value,
-    integrationEnvProvider := new DockerComposeEnvProvider(
+    integrationEnvProvider := IntegrationEnv.DockerCompose.Provider(
       "dev-it-env",
       baseDirectory.value / "docker-compose.yml",
       None

@@ -12,13 +12,11 @@ sealed trait TerminationStrategy extends Product with Serializable {
 
 object TerminationStrategy {
 
-  /**
-    * Terminate after execution of tests
+  /** Terminate after execution of tests
     */
   final case object UponTestCompletion extends TerminationStrategy
 
-  /**
-    * Never terminate
+  /** Never terminate
     */
   final case object Never extends TerminationStrategy
 
