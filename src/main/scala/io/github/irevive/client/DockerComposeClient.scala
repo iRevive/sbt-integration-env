@@ -1,6 +1,6 @@
 package io.github.irevive.client
 
-import scala.sys.process.Process
+import scala.sys.process.{Process, ProcessLogger}
 import scala.util.Try
 
 sealed abstract class DockerComposeClient(val name: String) {
@@ -31,9 +31,9 @@ object DockerComposeClient {
   }
 
   def create: Either[Throwable, DockerComposeClient] =
-    Try(Process("docker compose ls").!!)
+    Try(Process("docker compose ls").!!(ProcessLogger(_ => ())))
       .map(_ => Docker)
-      .orElse(Try(Process("docker-compose --help").!!).map(_ => DockerCompose))
+      .orElse(Try(Process("docker-compose --help").!!(ProcessLogger(_ => ()))).map(_ => DockerCompose))
       .toEither
 
 }

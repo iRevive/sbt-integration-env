@@ -20,6 +20,6 @@ object DockerClient {
   }
 
   def create: Either[Throwable, DockerClient] =
-    Try(Process("docker -v").!).map(_ => Default).toEither
+    Try(Default.version).map(_ => Default).toEither
 
 }
