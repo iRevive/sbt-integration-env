@@ -23,7 +23,7 @@ lazy val root = project
   .in(file("."))
   .enablePlugins(IntegrationEnvPlugin) // 1
   .settings(
-    integrationEnvProvider := new DockerComposeEnvProvider( // 2
+    integrationEnvProvider := IntegrationEnv.DockerCompose.Provider( // 2
       composeProjectName = s"${name.value}-it-env", 
       dockerComposeFile = baseDirectory.value / "docker-compose.yml", 
       network = None
@@ -39,10 +39,10 @@ lazy val root = project
 
 ## Environment provider
 
-There is a predefined `DockerComposeEnvProvider` which uses `docker-compose` for manipulations with the environment.  
+There is a predefined `DockerComposeEnvProvider` which uses `docker-compose` (or `docker compose` for a newer docker version) for manipulations with the environment.  
 
 ```scala
-new DockerComposeEnvProvider(
+IntegrationEnv.DockerCompose.Provider(
   composeProjectName = s"${name.value}-it-env", // 1
   dockerComposeFile = baseDirectory.value / "docker-compose.yml", // 2
   network = Some(s"${name.value}-it-network") // 3

@@ -4,7 +4,7 @@ lazy val root = project
   .settings(
     name                := "sbt-integration-env",
     organization        := "io.github.irevive",
-    crossSbtVersions    := Seq("1.3.12"),
+    crossSbtVersions    := Seq("1.5.3"),
     scriptedBufferLog   := false,
     scriptedLaunchOpts ++= Seq("-Xmx1024M", "-Dplugin.version=" + version.value),
     homepage            := Some(url("https://github.com/iRevive/sbt-integration-env")),
