@@ -1,7 +1,7 @@
 # sbt-integration-env
 
 [![Build Status](https://github.com/iRevive/sbt-integration-env/workflows/CI/badge.svg)](https://github.com/iRevive/sbt-integration-env/actions?query=branch%3Amaster+workflow%3ACI+)
-[![Maven Version](https://maven-badges.herokuapp.com/maven-central/io.github.irevive/sbt-integration-env/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.irevive/sbt-integration-env)
+[![sbt-integration-env Scala version support](https://index.scala-lang.org/irevive/sbt-integration-env/sbt-integration-env/latest-by-scala-version.svg?targetType=Sbt)](https://index.scala-lang.org/irevive/sbt-integration-env/sbt-integration-env)
 
 sbt-integration-env is an SBT plugin for environment management.  
 You can create and terminate the environment within SBT, or configure automated management during the execution of tests.
