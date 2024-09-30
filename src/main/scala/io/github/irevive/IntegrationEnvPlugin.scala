@@ -59,7 +59,8 @@ object IntegrationEnvPlugin extends AutoPlugin {
         val cachedProvider =
           Tracked.inputChanged[IntegrationEnv.Provider, IntegrationEnv](cacheStore) { (changed, in) =>
             if (changed) {
-              if (prev.nonEmpty) log.info(s"Integration provider has changed. Applying a new configuration [${in.name}]")
+              if (prev.nonEmpty)
+                log.info(s"Integration provider has changed. Applying a new configuration [${in.name}]")
               create(in)
             } else {
               prev.getOrElse(create(in))
