@@ -1,6 +1,6 @@
 # sbt-integration-env
 
-[![Build Status](https://github.com/iRevive/sbt-integration-env/workflows/CI/badge.svg)](https://github.com/iRevive/sbt-integration-env/actions?query=branch%3Amaster+workflow%3ACI+)
+[![Build Status](https://github.com/iRevive/sbt-integration-env/workflows/CI/badge.svg)](https://github.com/iRevive/sbt-integration-env/actions)
 [![sbt-integration-env Scala version support](https://index.scala-lang.org/irevive/sbt-integration-env/sbt-integration-env/latest-by-scala-version.svg?targetType=Sbt)](https://index.scala-lang.org/irevive/sbt-integration-env/sbt-integration-env)
 
 sbt-integration-env is an SBT plugin for environment management.  
