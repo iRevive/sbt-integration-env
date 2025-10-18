@@ -62,7 +62,7 @@ IntegrationEnv.DockerCompose.Provider(
 
 [Configuration example](https://github.com/iRevive/sbt-integration-env/tree/master/examples/simple) 
 
-Setting:
+The following setting controls the automated lifecycle management:
 ```sbt
 Test / testOptions := integrationEnvTestOpts.value
 ```
@@ -81,7 +81,7 @@ Termination strategies:
 | Strategy             | Before tests                                              | After tests               |
 |----------------------|-----------------------------------------------------------|---------------------------|
 | `UponTestCompletion` | Terminate the existing environment, then create a new one | Terminate the environment |  
-| `Never`              | Create a new one                                          | Do nothing                |
+| `Never`              | Create a new one if it doesn't exist yet                  | Do nothing                |
 
 
 ## External docker network
