@@ -8,5 +8,5 @@ lazy val root = project
       Some(s"${name.value}-it-network")
     ),
     Test / testOptions := integrationEnvTestOpts.value,
-    Test / fork := true
+    Test / fork        := true
   )
