@@ -3,9 +3,9 @@ lazy val root = project
   .enablePlugins(IntegrationEnvPlugin)
   .settings(
     integrationEnvProvider := IntegrationEnv.DockerCompose.Provider(
-      s"${name.value}-it-env",
-      baseDirectory.value / "docker-compose.yml",
-      Some(s"${name.value}-it-network")
+      composeProjectName = s"${name.value}-it-env",
+      dockerComposeFile = baseDirectory.value / "docker-compose.yml",
+      network = Some(s"${name.value}-it-network")
     ),
     Test / testOptions := integrationEnvTestOpts.value,
     Test / fork        := true
