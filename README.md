@@ -4,7 +4,7 @@
 [![sbt-integration-env Scala version support](https://index.scala-lang.org/irevive/sbt-integration-env/sbt-integration-env/latest-by-scala-version.svg?targetType=Sbt)](https://index.scala-lang.org/irevive/sbt-integration-env/sbt-integration-env)
 
 sbt-integration-env is an SBT plugin for environment management.  
-You can create and terminate the environment within SBT, or configure automated management during the execution of tests.
+You can create and terminate environments within sbt, or configure automated management during test execution.
 
 ## Quick Start
 
@@ -33,13 +33,13 @@ lazy val root = project
   )
 ```
 
-1) Enable plugin for a specific project.
-2) Configure environment provider. You can use `DockerComposeEnvProvider` or implement a custom one.
+1) Enable the plugin for a specific project.  
+2) Configure the environment provider. You can use `DockerComposeEnvProvider` or implement a custom one.  
 3) Optional. Enable automated management during the testing phase. [Details](#automated-creation-and-termination)
 
 ## Environment provider
 
-There is a predefined `DockerComposeEnvProvider` which uses `docker-compose` (or `docker compose` for a newer docker version) for manipulations with the environment.  
+A predefined `DockerComposeEnvProvider` uses `docker compose` to manage the environment.
 
 ```scala
 IntegrationEnv.DockerCompose.Provider(
@@ -55,40 +55,38 @@ IntegrationEnv.DockerCompose.Provider(
 
 ## Manual creation and termination
 
-`integrationEnvStart` - create environment.  
-`integrationEnvStop` - terminate environment.
+`integrationEnvStart` - create the environment.  
+`integrationEnvStop` - terminate the environment.
 
 ## Automated creation and termination
 
 [Configuration example](https://github.com/iRevive/sbt-integration-env/tree/master/examples/simple) 
 
-Setting:
+The following setting controls the automated lifecycle management:
 ```sbt
 Test / testOptions := integrationEnvTestOpts.value
 ```
 
-The plugin uses [Setup and Cleanup](https://scala-sbt.org/1.x/docs/Testing.html#Setup+and+Cleanup) hooks for manipulations. 
-Based on the termination strategy (UponTestCompletion, OnSbtExit, Never) the plugin behaves differently.  
+The plugin uses [Setup and Cleanup](https://scala-sbt.org/1.x/docs/Testing.html#Setup+and+Cleanup) hooks to manage the environment.  
+Depending on the termination strategy, such as `UponTestCompletion` or `Never`, the plugin behaves differently.  
 
-The strategy is determined by SBT's `insideCI` command: if `insideCI` is true the `UponTestCompletion` strategy is selected, otherwise the `Never` is used.   
-It can be configured explicitly as well:  
+The strategy is determined by sbt `insideCI` command: if `insideCI` is true the `UponTestCompletion` strategy is selected, otherwise `Never` is used.  
+It can also be configured explicitly: 
 ```sbt
 integrationEnvTerminationStrategy := TerminationStrategy.UponTestCompletion
 ```
 
 Termination strategies:
 
-1) UponTestCompletion  
-Before tests: terminate if exist, then create new    
-After tests: terminate  
+| Strategy             | Before tests                                              | After tests               |
+|----------------------|-----------------------------------------------------------|---------------------------|
+| `UponTestCompletion` | Terminate the existing environment, then create a new one | Terminate the environment |  
+| `Never`              | Create a new one if it doesn't exist yet                  | Do nothing                |
 
-2) Never  
-Before tests: create new if not exist     
-After tests: do not terminate  
 
 ## External docker network
 
 [Configuration example](https://github.com/iRevive/sbt-integration-env/tree/master/examples/external-docker-network) 
 
-External docker network is useful when you are running SBT build in docker container within [dind](https://hub.docker.com/_/docker).  
-At this point, you should use a shared network across all components: SBT container and docker-compose.  
+An external docker network is useful when running an SBT build in a docker container within [dind](https://hub.docker.com/_/docker).  
+In this case, you should use a shared network across all components: the SBT container and docker-compose.  
